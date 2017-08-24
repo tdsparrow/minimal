@@ -66,6 +66,26 @@ strip -g \
   2>/dev/null
 echo "Reduced the size of libraries and executables."
 
+# Copy badvpn
+cp $SRC_ROOT/work/badvpn/badvpn-master/build/tun2socks/badvpn-tun2socks bin
+cp /usr/lib/librt.so lib
+
+# Copy ShadowSocks
+SS_LIBS="libbloom.so libcork.so libipset.so"
+SS_SYS_LIBS="/usr/lib/libsodium.so /usr/lib/libudns.so \
+        /usr/lib/libpcre.so /usr/lib/libmbedtls.so \
+        /usr/lib/libmbedx509.so /usr/lib/libev.so"
+cp $SRC_ROOT/work/shadowsocks-libev/build/shared/bin/ss-local bin
+for l in $SS_LIBS
+do
+    cp $SRC_ROOT/work/shadowsocks-libev/build/lib/$l lib
+done
+    
+for l in $SS_SYS_LIBS
+do
+    cp `readlink -f $l` lib
+done
+
 echo "The initramfs area has been generated."
 
 cd $SRC_ROOT
